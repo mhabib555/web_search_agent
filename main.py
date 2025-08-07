@@ -68,7 +68,21 @@ def web_search(local_context: RunContextWrapper[UserContext], query: str, max_re
 
 def dynamic_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
     """Generate dynamic instructions for the agent based on user context."""
-    return f"You are {agent.name} and a web search expert. You’re helping {special_context.context.name} from city {special_context.context.city} who likes {special_context.context.topic}. When responding, detect keywords like “deeper” / “summarise” or understand user query what user asked for and adjust max_results accordingly e.g for summarize, a three-sentence answer with bullet-point links."
+    user_info = special_context.context
+
+    return f"""
+        You are {agent.name}, a helpful and concise web search expert. 
+        You are currently assisting {user_info.name} from {user_info.city} who is interested in {user_info.topic}.
+
+        Your task is to understand user queries and use the web_search tool to find relevant information.
+        
+        Adapt your search based on the user's intent:
+        - If the user asks for a "summary" or a "quick overview", call the `web_search` tool with `max_results` from 1 to 3.
+        - If the user asks for "more details" or "in-depth information", call the `web_search` tool with `max_results` from 7 to 10.
+        - For all other queries, use the default `max_results=5`.
+
+        Your response should be followed by a summary accordingly to user's intent and followed by a bulleted list of links from the search results.
+    """
 
 # Initialize the agent with clear instructions and tools
 agent: Agent = Agent(
@@ -79,21 +93,45 @@ agent: Agent = Agent(
     tools=[web_search]
 )
 
-async def call_agent():
+# change mock data user profile
+def change_user():
+    # Allow user to select from mock data
+    print("Available Users:")
+    for i, user in enumerate(fake_users):
+        print(f"[{i}]: {user['name']} (from {user['city']}, likes {user['topic']})")
+    
+    user_choice = input("Enter the number of the user you want to be (default: 1): ")
+    try:
+        user_index = int(user_choice) if user_choice else 1
+        if not 0 <= user_index < len(fake_users):
+            user_index = 1
+            print(f"Invalid choice. Defaulting to user {user_index}.")
+        return user_index
+    except ValueError:
+        user_index = 1
+        print(f"Invalid input. Defaulting to user {user_index}.")
+        return user_index
 
-    user_index = 1
-    user_info = UserContext(
+# set mock data user profile in UserContext
+def set_user(user_index: int = 1):
+    return UserContext(
         name=fake_users[user_index]['name'], 
         city=fake_users[user_index]['city'], 
         topic=fake_users[user_index]['topic']
     )
 
+async def call_agent():
+
+    user_info = set_user(user_index=1)
+
     while True:
         try: 
-            user_input = input("Enter your query (type exit to exit): ")
+            user_input = input("Enter your query (type exit to exit, type change to change user): ")
 
             if user_input.lower() == 'exit':
                 break  # Exit the loop if the user types 'exit'
+            elif user_input.lower() == 'change':
+                user_info = set_user(change_user())
             else:
                 response = Runner.run_streamed(
                     starting_agent=agent,
@@ -101,7 +139,7 @@ async def call_agent():
                     context=user_info
                 )
 
-                print("\n=== Run starting ===")
+                print("\n=== Agent's Process ===")
                 async for event in response.stream_events():
                     # We'll ignore the raw responses event deltas
                     if event.type == "raw_response_event":
@@ -116,11 +154,11 @@ async def call_agent():
                         #     print(f"-- Tool output: {event.item.output}")
                         # el
                         if event.item.type == "message_output_item":
-                            print(f"\n-- Message output:\n {ItemHelpers.text_message_output(event.item)}")
+                            print(f"\nAssistant:\n {ItemHelpers.text_message_output(event.item)}")
                         else:
                             pass  # Ignore other event types
 
-                print("=== Run complete ===\n")
+                print("=== Process complete ===\n")
 
         except Exception as e:
             print(f"Error processing query: {e}")    

@@ -11,7 +11,7 @@ This project is a simple agent-based web search assistant. It uses the `Agent` f
   - **Mock Data**: The project includes mock user data for easy testing. You can change the user by modifying the `user_index` variable in the script.
 
 
-## Setup steps
+## Setup 
 
 ### Prerequisites
 
@@ -25,11 +25,11 @@ You will also need to obtain the following API keys:
 
 
 
-### Setup Steps
+### Installation Steps
 
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/mhabib555/web_search_agent](https://github.com/mhabib555/web_search_agent)
+    git clone https://github.com/mhabib555/web_search_agent
     cd web_search_agent
     ```
 
