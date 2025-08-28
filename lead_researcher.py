@@ -1,35 +1,18 @@
-import os
-from dotenv import load_dotenv, find_dotenv
 from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings, RunContextWrapper, handoff
 from synthesis_agent import synthesis_agent
 from research_agents import research_agent, source_checker_agent, conflict_detector_agent
-from context import UserContext
-
-load_dotenv(find_dotenv())
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-
-if not gemini_api_key:
-    raise ValueError("Missing GEMINI_API_KEY")
-
-# Initialize Gemini client
-external_client = AsyncOpenAI(
-    api_key=gemini_api_key,
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-)
-
-# Define Gemini model
-llm_model = OpenAIChatCompletionsModel(
-    model="gemini-2.5-flash-lite",
-    openai_client=external_client
-)
+from context import UserContext, SUBSCRIPTION_CONFIGS
+from config import llm_model 
 
 def lead_researcher_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
     """Generate dynamic instructions for the Lead Research Agent based on user context."""
-    print('lllllllllllllllead')
-    print(f"lead Agent received context: {special_context}")
+
+    print('\nLead', agent.name)
 
     user_info = special_context.context
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"
+    
+    print(SUBSCRIPTION_CONFIGS[subscription_tier])
     return f"""
 You are LeadResearcher, a lead research orchestrator assisting {user_info.name} from {user_info.city}, interested in {user_info.topic} with a {subscription_tier} subscription.
 Your task is to manage a team of specialist agents to conduct in-depth research on the user's query.
@@ -38,13 +21,15 @@ Your task is to manage a team of specialist agents to conduct in-depth research 
    - Use 1–3 results for queries with "summary" or "quick overview".
    - Use 7–10 results for queries with "more details" or "in-depth".
    - Use 5 results for other queries.
-3. Pass sources (title, URL, content) to the Source Checker Agent for reliability ratings.
+3. Pass sources (title, URL, content) from Research Agent to the Source Checker Agent for reliability ratings.
 4. Pass findings to the Conflict Detector Agent to identify contradictions.
 5. Hand off findings (combine all) to the Synthesis Agent, which will produce a report and hand off to the Report Writer Agent.
 6. Return the final report to the user.
 Input is sub-queries. Output the final report as a string after coordinating with all agents.
 Ensure the research is tailored to the user's interests ({user_info.topic}) and respects the rate limits of the {subscription_tier} subscription.
 """
+
+
 lead_researcher = Agent(
     name="LeadResearcher",
     instructions=lead_researcher_instructions,

@@ -1,18 +1,5 @@
 from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
-from dataclasses import dataclass
-import os
-from dotenv import load_dotenv, find_dotenv
-
-load_dotenv(find_dotenv())
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-external_client = AsyncOpenAI(
-    api_key=gemini_api_key,
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-)
-llm_model = OpenAIChatCompletionsModel(
-    model="gemini-2.5-flash-lite",
-    openai_client=external_client
-)
+from config import llm_model
 
 report_writer_agent = Agent(
     name="ReportWriterAgent",
