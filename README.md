@@ -93,12 +93,12 @@ You will also need to obtain the following API keys:
 
 2. Run all tests using `pytest`:
    ```bash
-   pytest
+   uv run pytest
    ```
 
 3. To run a specific test file:
    ```bash
-   pytest test/test_information_gathering_agent.py
+   uv run pytest test/test_information_gathering_agent.py
    ```
 
 ## Project Structure
