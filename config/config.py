@@ -19,7 +19,7 @@ try:
     load_dotenv(find_dotenv())
     gemini_api_key = os.getenv("GEMINI_API_KEY")
     tavily_api_key = os.getenv("TAVILY_API_KEY")
-    openai_api_key = os.getenv("OPENAId_API_KEY")
+    openai_api_key = os.getenv("OPENId_API_KEY")
 
     # Validate API keys
     if not gemini_api_key or not tavily_api_key or not openai_api_key:
