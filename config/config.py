@@ -19,13 +19,14 @@ try:
     load_dotenv(find_dotenv())
     gemini_api_key = os.getenv("GEMINI_API_KEY")
     tavily_api_key = os.getenv("TAVILY_API_KEY")
-
-    # Set OpenAI API key for SDK tracing
-    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+    openai_api_key = os.getenv("OPENAId_API_KEY")
 
     # Validate API keys
-    if not gemini_api_key or not tavily_api_key or not os.getenv("OPENAI_API_KEY"):
+    if not gemini_api_key or not tavily_api_key or not openai_api_key:
         raise ValueError("Missing required API keys")
+    
+    # Set OpenAI API key for SDK tracing
+    os.environ["OPENAI_API_KEY"] = openai_api_key
 
     # Initialize async OpenAI client for Gemini API
     external_client = AsyncOpenAI(

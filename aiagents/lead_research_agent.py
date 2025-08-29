@@ -4,7 +4,7 @@ from aiagents.research_agents import research_agent, source_checker_agent, confl
 from config.context import UserContext, SUBSCRIPTION_CONFIGS
 from config.config import base_agent 
 
-def lead_researcher_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
+def lead_research_agent_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
     """Generate dynamic instructions for the Lead Research Agent based on user context."""
 
     print('\nLead Agent working ...')
@@ -13,7 +13,7 @@ def lead_researcher_instructions(special_context: RunContextWrapper[UserContext]
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"
     
     return f"""
-You are LeadResearcher, a lead research orchestrator assisting {user_info.name} from {user_info.city}, interested in {user_info.topic} with a {subscription_tier} subscription.
+You are Lead Research Agent, a lead research orchestrator assisting {user_info.name} from {user_info.city}, interested in {user_info.topic} with a {subscription_tier} subscription.
 Your task is to manage a team of specialist agents to conduct in-depth research on the user's query.
 1. Receive sub-queries from the Planning Agent.
 2. Assign sub-queries to the Research Agent, adapting search depth based on intent:
@@ -34,9 +34,9 @@ Additional guidelines:
 """
 
 
-lead_researcher = base_agent.clone(
-    name="LeadResearcher",
-    instructions=lead_researcher_instructions,
+lead_research_agent = base_agent.clone(
+    name="LeadResearchAgent",
+    instructions=lead_research_agent_instructions,
 #    model_settings=ModelSettings(temperature=0.3, max_tokens=1500),
     handoffs=[handoff(synthesis_agent)],
     tools=[

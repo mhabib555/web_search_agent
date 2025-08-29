@@ -1,5 +1,5 @@
 import pytest
-from aiagents.report_writer import report_writer_agent, format_report
+from aiagents.report_writer_agent import report_writer_agent, format_report
 
 def test_report_writer_agent_attributes():
     assert report_writer_agent.name == "ReportWriterAgent"

@@ -17,4 +17,4 @@ def test_planning_agent_handoff():
     assert len(planning_agent.handoffs) == 1
     handoff_obj = planning_agent.handoffs[0]
     assert hasattr(handoff_obj, "agent_name")
-    assert handoff_obj.agent_name == "LeadResearcher"
+    assert handoff_obj.agent_name == "LeadResearchAgent"

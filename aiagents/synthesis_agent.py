@@ -1,5 +1,5 @@
 from agents import ModelSettings, handoff
-from aiagents.report_writer import report_writer_agent
+from aiagents.report_writer_agent import report_writer_agent
 from config.config import base_agent
 
 synthesis_agent = base_agent.clone(
