@@ -1,6 +1,6 @@
 from agents import ModelSettings, function_tool, handoff
-from planning_agent import planning_agent
-from config import base_agent
+from aiagents.planning_agent import planning_agent
+from config.config import base_agent
 
 @function_tool
 def get_more_info_from_user(question: str) -> str:

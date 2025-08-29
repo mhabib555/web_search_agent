@@ -1,7 +1,7 @@
 from agents import RunContextWrapper, ModelSettings, handoff
-from lead_researcher import lead_researcher
-from context import UserContext, SUBSCRIPTION_CONFIGS
-from config import base_agent
+from aiagents.lead_researcher import lead_researcher
+from config.context import UserContext, SUBSCRIPTION_CONFIGS
+from config.config import base_agent
 
 
 def planning_agent_instructions(cxt: RunContextWrapper[UserContext], agent) -> str:
@@ -15,7 +15,7 @@ You are a Research Planning Agent.
 
 Your Job:
 1. Analyze the user's query using the provided context (name={user_info.name}, city={user_info.city}, topic={user_info.topic}) to ensure relevance.
-2. handoff to Lead Researcher Agent with a JSON array of strings, for example: ["sub-question 1", "sub-question 2"].
+2. handoff to Lead Researcher with a JSON array of strings, for example: ["sub-question 1", "sub-question 2"].
 
 Additional guidelines:
 - Consider API Subscriptions Rate limits: {SUBSCRIPTION_CONFIGS[subscription_tier]}.

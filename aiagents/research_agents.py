@@ -1,6 +1,6 @@
 from agents import ModelSettings, RunContextWrapper, function_tool
-from context import UserContext, SUBSCRIPTION_CONFIGS
-from config import base_agent,tavily_client
+from config.context import UserContext, SUBSCRIPTION_CONFIGS
+from config.config import base_agent,tavily_client
 
 
 @function_tool

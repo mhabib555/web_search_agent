@@ -1,9 +1,9 @@
 import asyncio
 import json
 from agents import Runner, SQLiteSession, ItemHelpers
-from information_gathering_agent import information_gathering_agent
-from context import UserContext
-from fake_data import fake_users
+from aiagents.information_gathering_agent import information_gathering_agent
+from config.context import UserContext
+from config.fake_data import fake_users
 
 session = SQLiteSession("deep_research")
 

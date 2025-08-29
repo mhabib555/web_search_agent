@@ -1,13 +1,13 @@
 from agents import Agent, RunContextWrapper, handoff
-from synthesis_agent import synthesis_agent
-from research_agents import research_agent, source_checker_agent, conflict_detector_agent
-from context import UserContext, SUBSCRIPTION_CONFIGS
-from config import base_agent 
+from aiagents.synthesis_agent import synthesis_agent
+from aiagents.research_agents import research_agent, source_checker_agent, conflict_detector_agent
+from config.context import UserContext, SUBSCRIPTION_CONFIGS
+from config.config import base_agent 
 
 def lead_researcher_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
     """Generate dynamic instructions for the Lead Research Agent based on user context."""
 
-    print('\nLead Agent working ...', agent.name)
+    print('\nLead Agent working ...')
 
     user_info = special_context.context
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"

@@ -1,5 +1,5 @@
-from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
-from config import llm_model
+from agents import Agent, ModelSettings
+from config.config import llm_model
 
 report_writer_agent = Agent(
     name="ReportWriterAgent",
