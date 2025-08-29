@@ -16,9 +16,7 @@ logger = logging.getLogger(__name__)
 
 try:
     # Load environment variables from .env file
-    if 'COLAB_GPU' in os.environ:
-        from google.colab import userdata
-        
+    if 'COLAB_GPU' in os.environ:        
         gemini_api_key = userdata.get("GEMINI_API_KEY")
         tavily_api_key = userdata.get("TAVILY_API_KEY")
         openai_api_key = userdata.get("OPENAI_API_KEY")
