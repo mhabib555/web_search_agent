@@ -27,13 +27,12 @@ information_gathering_agent = base_agent.clone(
     name="InformationGatheringAgent",
     instructions=f"""
 You are a Information Gathering Agent. Your task is to process the user's query that cover the main aspects.
-If you cannot fully process the query due to missing information, call the tool `get_more_info_from_user` to gather additional details.
-Return to Planning Agent with a JSON array of strings, for example: ["query 1", "query 2"].
-After generating queries, hand off to the Planning Agent    
+After generating query, hand off to the Planning Agent    
 """,
-
+# If the query is clear and contains sufficient details, make reasonable assumptions to fill any minor gaps and generate a query to help answer the user's question.
+# Only use the get_more_info_from_user tool when the query is ambiguous, incomplete, or lacks critical details necessary to proceed, and clearly state what specific information is needed.
     model_settings=ModelSettings(temperature=0.3, max_tokens=500),
-    tools=[get_more_info_from_user],
+    # tools=[get_more_info_from_user],
     handoffs=[
         handoff(
             agent=planning_agent,
