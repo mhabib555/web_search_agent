@@ -10,6 +10,7 @@ A multi-agent AI system for in-depth research on complex topics, leveraging Gemi
 - **Adaptive Web Search**: Dynamically adjusts search depth based on query intent.
 - **Tracing & Transparency**: All agent actions are tracked via the OpenAI SDK.
 - **Modern Integrations**: Supports Gemini API for language tasks and Tavily API for real-time
+- **Pytest Support**: Includes unit tests for all major modules using `pytest`.
 
 
 ## Setup 
@@ -83,6 +84,22 @@ You will also need to obtain the following API keys:
    - Conduct research using the Lead Research Agent, which calls specialist agents (Research, Source Checker, Conflict Detector) as tools, evaluates sources, detects conflicts, synthesizes findings, and formats a report (Synthesis and Report Writer Agents).
    - Output progress messages and the final report, personalized to the mock user.
 
+### Running Tests
+
+1. Make sure your virtual environment is activated:
+   ```bash
+   source .venv/bin/activate
+   ```
+
+2. Run all tests using `pytest`:
+   ```bash
+   pytest
+   ```
+
+3. To run a specific test file:
+   ```bash
+   pytest test/test_information_gathering_agent.py
+   ```
 
 ## Project Structure
 
@@ -104,6 +121,8 @@ web_search_agent/
 │   ├── context.py                      # User context dataclasses
 │   └── fake_data.py                    # Mock user data for personalization
 │
+├── test/                               # Pytest unit tests
+|
 ├── .env                # API keys (not committed)
 ├── .env.copy           # Env template
 ├── requirements.txt    # Python dependencies
