@@ -109,7 +109,7 @@ web_search_agent/
 ├── requirements.txt    # Python dependencies
 ├── pyproject.toml      # Project metadata
 └── .gitignore          # Git ignore
-
+```
 
 ## Agent Coordination
 
