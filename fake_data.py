@@ -1,5 +1,3 @@
-#from random import choice
-
 fake_users = [
     {"name": "Aisha Khan", "city": "Karachi", "topic": "Python Programming", "subscription": ["free"]},
     {"name": "M Habib", "city": "Hangu", "topic": "Web Development", "subscription": ["free"]},

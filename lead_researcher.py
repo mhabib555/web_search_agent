@@ -1,18 +1,17 @@
-from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings, RunContextWrapper, handoff
+from agents import Agent, RunContextWrapper, handoff
 from synthesis_agent import synthesis_agent
 from research_agents import research_agent, source_checker_agent, conflict_detector_agent
 from context import UserContext, SUBSCRIPTION_CONFIGS
-from config import llm_model 
+from config import base_agent 
 
 def lead_researcher_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
     """Generate dynamic instructions for the Lead Research Agent based on user context."""
 
-    print('\nLead', agent.name)
+    print('\nLead Agent working ...', agent.name)
 
     user_info = special_context.context
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"
     
-    print(SUBSCRIPTION_CONFIGS[subscription_tier])
     return f"""
 You are LeadResearcher, a lead research orchestrator assisting {user_info.name} from {user_info.city}, interested in {user_info.topic} with a {subscription_tier} subscription.
 Your task is to manage a team of specialist agents to conduct in-depth research on the user's query.
@@ -27,13 +26,17 @@ Your task is to manage a team of specialist agents to conduct in-depth research 
 6. Return the final report to the user.
 Input is sub-queries. Output the final report as a string after coordinating with all agents.
 Ensure the research is tailored to the user's interests ({user_info.topic}) and respects the rate limits of the {subscription_tier} subscription.
+
+Additional guidelines:
+- Use the user context to the user's interests.
+- API Subscriptions Rate limits: {SUBSCRIPTION_CONFIGS[subscription_tier]}.
+
 """
 
 
-lead_researcher = Agent(
+lead_researcher = base_agent.clone(
     name="LeadResearcher",
     instructions=lead_researcher_instructions,
-    model=llm_model,
 #    model_settings=ModelSettings(temperature=0.3, max_tokens=1500),
     handoffs=[handoff(synthesis_agent)],
     tools=[

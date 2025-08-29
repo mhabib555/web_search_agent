@@ -1,10 +1,11 @@
 import asyncio
 import json
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings, RunContextWrapper, ItemHelpers, set_tracing_disabled
+from agents import Runner, SQLiteSession, ItemHelpers
 from information_gathering_agent import information_gathering_agent
 from context import UserContext
 from fake_data import fake_users
 
+session = SQLiteSession("deep_research")
 
 async def main():
     
@@ -20,7 +21,7 @@ async def main():
     while True:
         try:
             user_input = input("Enter your research query (type 'exit' to quit): ").strip()
-            user_input = "Pros and cons of AI for patient diagnosis in 2025"
+            # user_input = "Pros and cons of AI for patient diagnosis in 2025"
             if user_input.lower() == 'exit':
                 break
             else:
@@ -30,7 +31,8 @@ async def main():
                     starting_agent=information_gathering_agent,
                     input=user_input,
                     context=user_context,
-                    max_turns=12
+                    max_turns=12,
+                    session=session
                 )
                 
                 final_report = ""
@@ -39,7 +41,6 @@ async def main():
                     
                     if event.type == "agent_updated_stream_event":
                         last_agent = event.new_agent.name
-                        # print(f"Agent updated: {last_agent}")
                         continue
                     elif event.type == "run_item_stream_event":
                         if event.item.type == "message_output_item":

@@ -1,6 +1,6 @@
-from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings, RunContextWrapper, function_tool
+from agents import ModelSettings, RunContextWrapper, function_tool
 from context import UserContext, SUBSCRIPTION_CONFIGS
-from config import llm_model,tavily_client
+from config import base_agent,tavily_client
 
 
 @function_tool
@@ -19,16 +19,9 @@ async def web_search(local_context: RunContextWrapper[UserContext], query: str, 
     response = await tavily_client.search(query=query, max_results=max_results)
     return response
 
-# Base agent for cloning
-base_research_agent = Agent(
-    name="BaseResearchAgent",
-    instructions="You are a base agent for research tasks. This agent will be cloned for specific roles.",
-    model=llm_model,
-    model_settings=ModelSettings(temperature=0.3, max_tokens=500)
-)
 
 # Research Agent
-research_agent = base_research_agent.clone(
+research_agent = base_agent.clone(
     name="ResearchAgent",
     instructions="""
 You are a Research Agent tasked with gathering information using the Tavily API.
@@ -46,7 +39,7 @@ Output format: {"query": "sub-query", "results": [{"title": "...", "url": "...",
 )
 
 # Source Checker Agent
-source_checker_agent = base_research_agent.clone(
+source_checker_agent = base_agent.clone(
     name="SourceCheckerAgent",
     instructions="""
 You are a Source Checker Agent tasked with evaluating the reliability of sources.
@@ -59,7 +52,7 @@ Output format: [{"title": "...", "url": "...", "content": "...", "reliability": 
 )
 
 # Conflict Detector Agent
-conflict_detector_agent = base_research_agent.clone(
+conflict_detector_agent = base_agent.clone(
     name="ConflictDetectorAgent",
     instructions="""
 You are a Conflict Detector Agent tasked with identifying contradictions in research findings.
