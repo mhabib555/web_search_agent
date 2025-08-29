@@ -16,10 +16,18 @@ logger = logging.getLogger(__name__)
 
 try:
     # Load environment variables from .env file
-    load_dotenv(find_dotenv())
-    gemini_api_key = os.getenv("GEMINI_API_KEY")
-    tavily_api_key = os.getenv("TAVILY_API_KEY")
-    openai_api_key = os.getenv("OPENId_API_KEY")
+    if 'COLAB_GPU' in os.environ:
+        from google.colab import userdata
+        
+        gemini_api_key = userdata.get("GEMINI_API_KEY")
+        tavily_api_key = userdata.get("TAVILY_API_KEY")
+        openai_api_key = userdata.get("OPENAI_API_KEY")
+    else: 
+        load_dotenv(find_dotenv())
+        gemini_api_key = os.getenv("GEMINI_API_KEY")
+        tavily_api_key = os.getenv("TAVILY_API_KEY")
+        openai_api_key = os.getenv("OPENId_API_KEY")
+
 
     # Validate API keys
     if not gemini_api_key or not tavily_api_key or not openai_api_key:
