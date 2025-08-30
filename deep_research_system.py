@@ -18,7 +18,8 @@ RED = "\033[31m"
 
 # Initialize SQLite session for storing research data
 try:
-    session = SQLiteSession("deep_research")
+    pass
+    # session = SQLiteSession("deep_research")
 except Exception as e:
     logger.error(f"Failed to initialize SQLite session: {str(e)}")
     print(f"{RED}Error: Failed to initialize SQLite session: {str(e)}{RESET}")
@@ -59,7 +60,7 @@ async def main():
                     input=user_input,
                     context=user_context,
                     max_turns=12,
-                    session=session
+                    # session=session
                 )
 
                 final_report = ""

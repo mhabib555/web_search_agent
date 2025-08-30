@@ -27,7 +27,7 @@ def lead_research_agent_instructions(special_context: RunContextWrapper[UserCont
 You are Lead Research Agent, a lead research orchestrator assisting {user_info.name}.
 Your task is to manage a team of specialist agents to conduct in-depth research on the user's query.
 1. Receive sub-queries from the Planning Agent.
-2. Assign sub-queries to the Research Agent, adapting search depth based on intent:
+2. Assign sub-queries to the Research Agent one by one, adapting search depth based on intent:
    - Use {use_results_for_summary} results for queries with "summary" or "quick overview".
    - Use {use_results_for_details} results for queries with "more details" or "in-depth".
    - Use {subqueires_limit} results for other queries.
@@ -45,7 +45,7 @@ lead_research_agent = base_agent.clone(
     tools=[
         research_agent.as_tool(
             tool_name="research_agent",
-            tool_description="Performs web searches using the Tavily API to gather information on a given sub-query, adapting search depth based on intent."
+            tool_description="Performs web searches using the Tavily API to gather information on a given sub-query, adapting search depth based on intent.",
         ),
         source_checker_agent.as_tool(
             tool_name="source_checker_agent",
