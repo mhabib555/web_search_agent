@@ -46,7 +46,7 @@ try:
     }
 
     # Verify selected model exists
-    selected_model = "flash-lite-2.0"
+    selected_model = "flash-2.5"
     if selected_model not in gemini_models:
         raise KeyError(f"Model {selected_model} not found in gemini_models")
 

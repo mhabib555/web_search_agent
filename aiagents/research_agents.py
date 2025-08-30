@@ -4,7 +4,7 @@ from config.config import base_agent,tavily_client
 
 
 @function_tool
-async def web_search(local_context: RunContextWrapper[UserContext], query: str, max_results: int = 5) -> dict:
+async def web_search(query: str, max_results: int = 5) -> dict:
     """
     Perform a web search using Tavily API and return the results.
     

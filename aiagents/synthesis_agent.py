@@ -1,11 +1,13 @@
 from agents import ModelSettings, handoff
 from aiagents.report_writer_agent import report_writer_agent
 from config.config import base_agent
+from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 
 synthesis_agent = base_agent.clone(
     name="SynthesisAgent",
-    instructions="""
-You are a Synthesis Agent. Combine the provided research findings into a coherent report.
+    instructions=""" {RECOMMENDED_PROMPT_PREFIX}
+You are a Synthesis Agent. Combine the provided research findings into a coherent report and hand off to the Report Writer Agent.
+- Receive research findings from the Lead Research Agent.
 - Include key insights, themes, and trends.
 - Highlight any conflicts.
 - Mention source reliability where relevant (using the provided ratings).
@@ -14,11 +16,10 @@ You are a Synthesis Agent. Combine the provided research findings into a coheren
 Structure the report clearly with headings.
 After synthesizing, handoff the report to the Report Writer Agent to format the report.
 """,
-    model_settings=ModelSettings(temperature=0.3, max_tokens=2000),
+    model_settings=ModelSettings(temperature=0.3, max_tokens=1500),
     handoffs=[
         handoff(
             agent=report_writer_agent,
-            tool_name_override="ReportWriterAgent"
         )
     ]
 )
