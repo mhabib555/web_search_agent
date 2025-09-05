@@ -10,37 +10,53 @@ async def process_query_loop(user_context: UserContext, session):
     """Main loop to handle user queries and agent execution until information is complete."""
     default_query = "How did the adoption of server-side rendering with Laravel improve page load times of websites, concise?"
     
+    exit_flag = False
+    
     while True:
+        
+        if exit_flag:
+            print(f"{YELLOW}Exiting query loop.{RESET}")
+            break
         try:
             # Get initial user input
             user_input = get_user_input(default_query, prompt_type="initial")
             if user_input == 'exit':
-                print(f"{YELLOW}Exiting query loop.{RESET}")
-                break
+                exit_flag = True
+                continue
 
             # Initialize or update the query with user input
             current_query = user_input
 
             # Loop until information gathering is complete
             while True:
+                if exit_flag:
+                    break
                 info_gathering_result = await run_information_gathering_agent(current_query, user_context, session)
                 
                 if info_gathering_result and info_gathering_result.is_information_complete:
                     print(f"{GREEN}Information gathering complete. Proceeding to planning phase.{RESET}")
                     final_report, last_agent = await run_planning_agent(info_gathering_result, user_context, session)
-                    display_final_report(final_report, last_agent)
-                    # Prompt for a new topic
-                    user_input = get_user_input(prompt_type="new_topic_or_save")
-                    if user_input == 'exit':
-                        print(f"{YELLOW}Exiting query loop.{RESET}")
-                        break
-                    elif user_input == 'save':
-                        filename = save_as_markdown(final_report)
-                        print(f"{GREEN}Report saved as {filename}{RESET}")
-                        user_input = get_user_input(prompt_type="new_topic")
+
+                    if final_report and last_agent == "ReportWriterAgent":
+                        display_final_report(final_report, last_agent)
+                        # Prompt for a new topic
+                        user_input = get_user_input(prompt_type="new_topic_or_save")
                         if user_input == 'exit':
-                            print(f"{YELLOW}Exiting query loop.{RESET}")
+                            exit_flag = True
                             break
+                        elif user_input == 'save':
+                            filename = save_as_markdown(final_report)
+                            print(f"{GREEN}Report saved as {filename}{RESET}")
+                            user_input = get_user_input(prompt_type="new_topic")
+                            if user_input == 'exit':
+                                exit_flag = True
+                                break
+                    else:
+                        user_input = get_user_input(prompt_type="failed_report")
+                        if user_input == 'exit':
+                            exit_flag = True
+                            break
+
                     # Start a new query
                     current_query = user_input
                 else:
@@ -48,15 +64,16 @@ async def process_query_loop(user_context: UserContext, session):
                     print(info_gathering_result.data)
                     additional_input = get_user_input(prompt_type="additional")
                     if additional_input == 'exit':
-                        print(f"{YELLOW}Exiting query loop.{RESET}")
-                        return  # Exit the entire loop
+                        exit_flag = True
+                        break
                     # Append or combine additional input to the current query
                     current_query = f"{current_query}\nAdditional details: {additional_input}"
 
         except KeyboardInterrupt:
             logger.info("User interrupted the process")
             print(f"{YELLOW}User interrupted the process{RESET}")
-            break
+            exit_flag = True
+            continue
         except Exception as e:
             logger.error(f"Error in query loop: {str(e)}")
             print(f"{RED}Error: {str(e)}{RESET}")

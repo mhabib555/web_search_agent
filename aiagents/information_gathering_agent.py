@@ -56,7 +56,6 @@ information_gathering_agent = base_agent.clone(
 - Handle 'Unknown' tool responses with defaults based on UserContext (e.g., user's topic or city).
 - If user input fails, set `is_information_complete=false` and include partial data.
 - Do not perform research; focus on query refinement.
-- Log actions via OpenAI SDK for traceability.
 - Always return a valid JSON string as described above.
 
 **Example**:
@@ -73,7 +72,6 @@ information_gathering_agent = base_agent.clone(
 
 **Integration**:
 - Output feeds into the system for downstream agents (e.g., Planning Agent).
-- Use Gemini API for language processing; ensure compatibility with Tavily API and OpenAI SDK tracing.
 """,
     model_settings=ModelSettings(temperature=0.3, max_tokens=500),
     tools=[get_more_info_from_user],

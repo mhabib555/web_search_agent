@@ -1,8 +1,9 @@
-from agents import SQLiteSession, RunHooks, RunContextWrapper, Agent
+from agents import SQLiteSession, RunHooks, RunContextWrapper, Agent, Tool
 from config.context import UserContext
 from config.fake_data import fake_users
 from config.config import logger
 from config.constants import RESET, CYAN, YELLOW, WHITE, RED
+import os
 
 def initialize_sqlite_session(db_name: str) -> SQLiteSession:
     """Initialize SQLite session for storing research data.
@@ -72,6 +73,10 @@ def get_user_input(default_query: str = "", prompt_type: str = "initial") -> str
     elif prompt_type == "new_topic":
         print(f"{CYAN}Search another topic or type 'exit' to quit.{RESET}")
         prompt_message = f"{CYAN}\nEnter your next research query: {RESET}"
+    elif prompt_type == "failed_report":
+        print(f"{RED}Failed to generate report.{RESET}")
+        print(f"{CYAN}Search another topic or type 'exit' to quit.{RESET}")
+        prompt_message = f"{CYAN}\nEnter your next research query: {RESET}"
     else:
         # Fallback to default prompt
         print(f"{CYAN}Type 'exit' to quit.{RESET}")
@@ -93,17 +98,15 @@ def display_final_report(final_report: str, last_agent: str):
         final_report (str): The final report text.
         last_agent (str): Name of the agent that produced the report.
     """
-    if final_report and last_agent == "ReportWriterAgent":
-        print(f"{WHITE}\n\n\n================================{RESET}")
-        print(f"{WHITE}\n=== {last_agent} Research Report ===\n{RESET}")
-        print(f"{WHITE}{final_report}{RESET}")
-        print(f"{WHITE}\n=== End of Report ===\n{RESET}")
+    print(f"{WHITE}\n=== Research Report ===\n{RESET}")
+    print(f"{WHITE}{final_report}{RESET}")
+    print(f"{WHITE}\n=== End of Report ===\n{RESET}")
 
 
 def save_as_markdown(report: str, filename: str = "research_report.md") -> str:
     """Save the formatted report as a Markdown file and return the file path."""
     try:
-        filepath = "reports/".join(filename)
+        filepath = os.path.join("reports", filename)
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(report)
         return filepath
@@ -120,8 +123,8 @@ class RunAgentHooks(RunHooks):
     async def on_llm_start(self, context: RunContextWrapper, agent: Agent, system_prompt, input_items):
         print(f"\n\n[RunLifecycle] LLM call for agent {agent.name} starting with system prompt: {system_prompt} and input items: {input_items}\n\n")
 
-    # async def on_agent_end(self, context: RunContextWrapper, agent: Agent, result):
-    #     print(f"\n\n[RunLifecycle] Agent {agent.name} ended with result: {result}\n\n")
+    async def on_agent_end(self, context: RunContextWrapper, agent: Agent, result):
+        print(f"\n\n[RunLifecycle] Agent {agent.name} ended with result: {result}\n\n")
 
     async def on_llm_end(self, context: RunContextWrapper, agent: Agent, response):
         print(f"\n\n[RunLifecycle] LLM call for agent {agent.name} ended with response: {response}\n\n")
@@ -129,3 +132,5 @@ class RunAgentHooks(RunHooks):
     async def on_handoff(self, context, from_agent, to_agent):
         print(f"\n\n[RunLifecycle] Handoff from agent {from_agent.name} to agent {to_agent.name}\n\n")
 
+    async def on_tool_start(self, context: RunContextWrapper, agent: Agent, tool: Tool):   
+        print(f"\n\n[RunLifecycle] Tool {tool.name} for agent {agent.name}\n\n")

@@ -23,7 +23,9 @@ def lead_research_agent_instructions(special_context: RunContextWrapper[UserCont
     return f"""
 {RECOMMENDED_PROMPT_PREFIX}
 You are Lead Research Agent, a lead research orchestrator assisting {user_info.name}.
-Your task is to manage a team of specialist agents to conduct in-depth research on the user's query.
+Your task is to manage a team of specialist agents to conduct in-depth research on the user's query. You operate as a backend agent and **must not** produce user-facing language or interact directly with the user. Your output is strictly for internal use by other agents.
+
+Your Job:
 1. Receive sub-queries from the Planning Agent.
 2. Assign sub-queries to the Research Agent one by one, adapting search depth based on intent:
    - Use {use_results_for_summary} results for queries with "summary" or "quick overview".
@@ -32,13 +34,15 @@ Your task is to manage a team of specialist agents to conduct in-depth research 
 3. Pass sources (title, URL, content) from Research Agent to the Source Checker Agent for reliability ratings.
 4. Pass findings to the Conflict Detector Agent to identify contradictions.
 5. Hand off findings (combine all) to the Synthesis Agent, which will produce a report and hand off to the Report Writer Agent.
+6. Do NOT produce conversational text, such as "I will ask" or "I will generate," in your output.
+
 """
 
 
 lead_research_agent = base_agent.clone(
     name="LeadResearchAgent",
     instructions=lead_research_agent_instructions,
-    model_settings=ModelSettings(temperature=0.3, max_tokens=1000),
+    model_settings=ModelSettings(temperature=0.3),
     handoffs=[handoff(synthesis_agent)],
     tools=[
         research_agent.as_tool(
