@@ -1,8 +1,8 @@
 from agents import Runner, ItemHelpers
-from aiagents.planning_agent import planning_agent
 from config.context import UserContext, InformationGatheringAnswer
+from config.constants import RESET, GREEN
 from utils import RunAgentHooks
-from config.constants import RESET, GREEN, BLUE, MAGENTA, YELLOW, RED
+from aiagents.planning_agent import planning_agent
 
 
 async def run_planning_agent(
@@ -34,5 +34,5 @@ async def run_planning_agent(
             elif event.item.type == "tool_call_output_item":
                 pass
                 # print(f"{MAGENTA}Tool output: {event.item.output}{RESET}")
-    
+
     return final_report, last_agent

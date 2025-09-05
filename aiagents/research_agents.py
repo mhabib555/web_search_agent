@@ -63,4 +63,3 @@ Output format: {"conflicts": [{"sub_query_1": "...", "sub_query_2": "...", "conf
 """,
     model_settings=ModelSettings(temperature=0.2, max_tokens=500)
 )
-

@@ -26,7 +26,16 @@ class UserContext:
     subscription: List[str] = field(default_factory=lambda: ["free"])  # Default to free tier
 
 
-# Information Gathering Agent returns structured data
 class InformationGatheringAnswer(BaseModel):
+    """Represents the structured response from an information-gathering agent.
+
+    This class defines the schema for data returned by an information-gathering process,
+    including whether the information is complete and the collected data.
+
+    Attributes:
+        is_information_complete (bool): Indicates whether the information-gathering process
+            has collected all required data.
+        data (str): The collected data or response from the information-gathering agent.
+    """
     is_information_complete: bool
     data: str

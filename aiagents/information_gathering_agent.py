@@ -1,6 +1,5 @@
 from agents import ModelSettings, function_tool
 from config.config import base_agent, llm_lite_model
-from config.context import UserContext, InformationGatheringAnswer
 
 @function_tool
 def get_more_info_from_user(question: str) -> str:
@@ -24,7 +23,7 @@ def get_more_info_from_user(question: str) -> str:
 
 information_gathering_agent = base_agent.clone(
     name="InformationGatheringAgent",
-    instructions=f"""
+    instructions="""
     You are the Information Gathering Agent, the entry point for a multi-agent research system. Your task is to collect, refine, and structure user queries using the provided UserContext for personalization, then return a JSON string representing an `InformationGatheringAnswer` with the refined query and completion status.
 
 **Tasks**:

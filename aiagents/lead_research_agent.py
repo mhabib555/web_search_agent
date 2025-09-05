@@ -1,16 +1,16 @@
 from agents import Agent, RunContextWrapper, ModelSettings, handoff
+from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 from aiagents.synthesis_agent import synthesis_agent
 from aiagents.research_agents import research_agent, source_checker_agent, conflict_detector_agent
-from config.context import UserContext, SUBSCRIPTION_CONFIGS
-from config.config import base_agent 
-from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
+from config.context import UserContext
+from config.config import base_agent
 
 def lead_research_agent_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
     """Generate dynamic instructions for the Lead Research Agent based on user context."""
 
     user_info = special_context.context
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"
-    
+
     if(subscription_tier == "free"):
         subqueires_limit = 2
         use_results_for_summary = "1-2"
@@ -19,7 +19,7 @@ def lead_research_agent_instructions(special_context: RunContextWrapper[UserCont
         subqueires_limit = 5
         use_results_for_summary = "1-3"
         use_results_for_details = "7-10"
-    
+
     return f"""
 {RECOMMENDED_PROMPT_PREFIX}
 You are Lead Research Agent, a lead research orchestrator assisting {user_info.name}.
@@ -35,7 +35,6 @@ Your Job:
 4. Pass findings to the Conflict Detector Agent to identify contradictions.
 5. Hand off findings (combine all) to the Synthesis Agent, which will produce a report and hand off to the Report Writer Agent.
 6. Do NOT produce conversational text, such as "I will ask" or "I will generate," in your output.
-
 """
 
 

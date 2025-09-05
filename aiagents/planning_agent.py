@@ -1,8 +1,8 @@
 from agents import RunContextWrapper, ModelSettings, handoff
-from aiagents.lead_research_agent import lead_research_agent
-from config.context import UserContext, SUBSCRIPTION_CONFIGS
-from config.config import base_agent, llm_lite_model
 from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
+from config.context import UserContext
+from config.config import base_agent, llm_lite_model
+from aiagents.lead_research_agent import lead_research_agent
 
 
 def planning_agent_instructions(cxt: RunContextWrapper[UserContext], agent) -> str:
@@ -11,7 +11,7 @@ def planning_agent_instructions(cxt: RunContextWrapper[UserContext], agent) -> s
     user_info = cxt.context
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"
 
-    if(subscription_tier == "free"):
+    if subscription_tier == "free":
         subquestions_limit = "1-2"
     else:
         subquestions_limit = "3-5"

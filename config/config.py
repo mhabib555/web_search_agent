@@ -27,7 +27,7 @@ try:
     # Validate API keys
     if not gemini_api_key or not tavily_api_key or not openai_api_key:
         raise ValueError("Missing required API keys")
-    
+
     # Set OpenAI API key for SDK tracing
     os.environ["OPENAI_API_KEY"] = openai_api_key
 
