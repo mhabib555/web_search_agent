@@ -18,8 +18,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 try:
-    # Load environment variables from .env file
-    load_dotenv(find_dotenv())
+    # Load environment variables conditionally
+    # This ensures it works on both local and CI environments
+    if os.getenv('CI') != 'true':
+        # Only load the .env file if we are not in a CI environment
+        load_dotenv(find_dotenv())
+    
     gemini_api_key = os.getenv("GEMINI_API_KEY")
     tavily_api_key = os.getenv("TAVILY_API_KEY")
     openai_api_key = os.getenv("OPENAI_API_KEY")
