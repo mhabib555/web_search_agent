@@ -1,7 +1,7 @@
 from agents import ModelSettings, handoff
+from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 from aiagents.report_writer_agent import report_writer_agent
 from config.config import base_agent
-from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 
 synthesis_agent = base_agent.clone(
     name="SynthesisAgent",

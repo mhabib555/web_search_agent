@@ -75,7 +75,7 @@ async def process_query_loop(user_context: UserContext, session):
             exit_flag = True
             continue
         except Exception as e:
-            logger.error(f"Error in query loop: {str(e)}")
+            logger.error("Error in query loop: %s" ,str(e))
             print(f"{RED}Error: {str(e)}{RESET}")
             continue
 
@@ -94,11 +94,11 @@ async def main():
         await process_query_loop(user_context, session)
         
     except IndexError as ie:
-        logger.error(f"User context error: {str(ie)}")
+        logger.error("User context error: %s" ,str(e))
         print(f"{RED}Error: {str(ie)}{RESET}")
         raise
     except Exception as e:
-        logger.error(f"Unexpected error in main: {str(e)}")
+        logger.error("Unexpected error in main: %s" ,str(e))
         print(f"{RED}Error: {str(e)}{RESET}")
         raise
 
@@ -106,6 +106,6 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except Exception as e:
-        logger.error(f"Error running asyncio: {str(e)}")
+        logger.error("Error running asyncio: %s" ,str(e))
         print(f"{RED}Error: {str(e)}{RESET}")
         raise

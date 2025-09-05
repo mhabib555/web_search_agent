@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
-from pydantic import BaseModel  
+from pydantic import BaseModel
 
 @dataclass
 class SubscriptionConfig:
@@ -12,8 +12,8 @@ class SubscriptionConfig:
 # Predefined subscription configurations
 SUBSCRIPTION_CONFIGS = {
     "free": SubscriptionConfig(tier="free", rate_per_min=10, wait_period=60),
-    "Pro": SubscriptionConfig(tier="Pro", rate_per_min=20, wait_period=60),  # Example: Higher rate for Pro
-    "Ultra": SubscriptionConfig(tier="Ultra", rate_per_min=50, wait_period=60)  # Example: Higher rate for Ultra
+    "Pro": SubscriptionConfig(tier="Pro", rate_per_min=20, wait_period=60),
+    "Ultra": SubscriptionConfig(tier="Ultra", rate_per_min=50, wait_period=60)
 }
 
 @dataclass
@@ -23,7 +23,7 @@ class UserContext:
     city: Optional[str] = None
     topic: Optional[str] = None
     query: Optional[str] = None
-    subscription: List[str] = field(default_factory=lambda: ["free"])  # Default to free tier
+    subscription: List[str] = field(default_factory=lambda: ["free"]) 
 
 
 class InformationGatheringAnswer(BaseModel):

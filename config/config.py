@@ -1,13 +1,12 @@
-# Import required modules
-from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, ModelSettings
 import os
-from dotenv import load_dotenv, find_dotenv
-from tavily import AsyncTavilyClient
 import logging
+from dotenv import load_dotenv, find_dotenv
+from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel
+from tavily import AsyncTavilyClient
 
 # Configure logging for error handling
 logging.basicConfig(
-    level=logging.ERROR, 
+    level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s',
     # save errors to a file
     # filename='errors.log'
@@ -16,13 +15,10 @@ logger = logging.getLogger(__name__)
 
 try:
     # Load environment variables from .env file
-    if 'COLAB_GPU' in os.environ:  
-        print("Running in Google Colab environment")      
-    else: 
-        load_dotenv(find_dotenv())
-        gemini_api_key = os.getenv("GEMINI_API_KEY")
-        tavily_api_key = os.getenv("TAVILY_API_KEY")
-        openai_api_key = os.getenv("OPENAI_API_KEY")
+    load_dotenv(find_dotenv())
+    gemini_api_key = os.getenv("GEMINI_API_KEY")
+    tavily_api_key = os.getenv("TAVILY_API_KEY")
+    openai_api_key = os.getenv("OPENAI_API_KEY")
 
     # Validate API keys
     if not gemini_api_key or not tavily_api_key or not openai_api_key:
@@ -46,22 +42,22 @@ try:
     }
 
     # Verify selected model exists
-    selected_model = "flash-2.0"
-    selected_lite_model = "flash-lite-2.0"
-    if selected_model not in gemini_models:
-        raise KeyError(f"Model {selected_model} not found in gemini_models")
-    if selected_lite_model not in gemini_models:
-        raise KeyError(f"Model {selected_lite_model} not found in gemini_models")
+    SELECTED_MODEL = "flash-2.0"
+    SELECTED_LITE_MODEL = "flash-lite-2.0"
+    if SELECTED_MODEL not in gemini_models:
+        raise KeyError(f"Model {SELECTED_MODEL} not found in gemini_models")
+    if SELECTED_LITE_MODEL not in gemini_models:
+        raise KeyError(f"Model {SELECTED_LITE_MODEL} not found in gemini_models")
 
     # Configure language model with Gemini model
     llm_model = OpenAIChatCompletionsModel(
-        model=gemini_models[selected_model],
+        model=gemini_models[SELECTED_MODEL],
         openai_client=external_client
     )
 
     # Configure language model with lightweight Gemini model
     llm_lite_model = OpenAIChatCompletionsModel(
-        model=gemini_models[selected_lite_model],
+        model=gemini_models[SELECTED_LITE_MODEL],
         openai_client=external_client
     )
 
@@ -73,16 +69,15 @@ try:
         name="BaseResearchAgent",
         instructions="You are a base agent for research tasks. This agent will be cloned for specific roles.",
         model=llm_model,
-        # model_settings=ModelSettings(temperature=0.3, max_tokens=500)
     )
 
 
 except ValueError as ve:
-    logger.error(f"Configuration error: {str(ve)}")
+    logger.error("Configuration error: %s", str(ve))
     raise
 except KeyError as ke:
-    logger.error(f"Model selection error: {str(ke)}")
+    logger.error("Model selection error: %s", str(ke))
     raise
 except Exception as e:
-    logger.error(f"Unexpected error during setup: {str(e)}")
+    logger.error("Unexpected error during setup: %s", str(e))
     raise
