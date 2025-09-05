@@ -6,8 +6,8 @@ from aiagents.planning_agent import planning_agent
 
 
 async def run_planning_agent(
-    info_gathering_result: InformationGatheringAnswer, 
-    user_context: UserContext, 
+    info_gathering_result: InformationGatheringAnswer,
+    user_context: UserContext,
     session
 ) -> tuple[str, str]:
     """Run the Planning Agent and process its response."""

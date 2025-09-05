@@ -43,5 +43,5 @@ async def run_information_gathering_agent(
                     print(f"{RED}Failed to parse output: {str(e)}{RESET}")
             elif event.item.type == "tool_call_output_item":
                 print(f"{MAGENTA}Tool output: {event.item.output}{RESET}")
-    
+
     return info_gathering_result

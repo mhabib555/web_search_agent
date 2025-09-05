@@ -10,10 +10,10 @@ def test_api_keys_loaded(monkeypatch):
     monkeypatch.setenv("TAVILY_API_KEY", "dummy")
     monkeypatch.setenv("OPENAI_API_KEY", "dummy")
     # Re-import config to trigger the check
-    import sys
+    import sys # pylint: disable=import-outside-toplevel
     if "config.config" in sys.modules:
         del sys.modules["config.config"]
-    import config.config as cfg # pylint: disable=reimported
+    import config.config as cfg # pylint: disable=reimported, import-outside-toplevel
     assert cfg.gemini_api_key == "dummy"
     assert cfg.tavily_api_key == "dummy"
     assert "OPENAI_API_KEY" in cfg.os.environ

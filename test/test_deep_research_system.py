@@ -1,6 +1,7 @@
 from aiagents.information_gathering_agent import information_gathering_agent
 from config.context import UserContext
 from config.fake_data import fake_users
+import deep_research_system
 
 def test_imports_and_user_context():
     """Verify InformationGatheringAgent and UserContext initialize correctly with fake user data."""
@@ -19,5 +20,4 @@ def test_imports_and_user_context():
 
 def test_main_is_async():
     """Check that the main function in deep_research_system is an async coroutine."""
-    import deep_research_system
     assert hasattr(deep_research_system, "main")
