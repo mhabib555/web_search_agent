@@ -38,7 +38,7 @@ async def process_query_loop(user_context: UserContext, session):
                     final_report, last_agent = await run_planning_agent(info_gathering_result, user_context, session)
 
                     if final_report and last_agent == "ReportWriterAgent":
-                        display_final_report(final_report, last_agent)
+                        display_final_report(final_report)
                         # Prompt for a new topic
                         user_input = get_user_input(prompt_type="new_topic_or_save")
                         if user_input == 'exit':
