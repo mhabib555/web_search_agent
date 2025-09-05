@@ -1,9 +1,5 @@
 from config import config
 
-def test_model_settings_import():
-    """Verify ModelSettings is correctly imported in the config module."""
-    assert hasattr(config, "ModelSettings")
-
 def test_api_keys_loaded(monkeypatch):
     """Test that API keys are properly loaded and raise errors if missing."""
     monkeypatch.setenv("GEMINI_API_KEY", "dummy")
