@@ -11,6 +11,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "pylint>=3.3.8",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
 ]
