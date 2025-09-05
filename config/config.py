@@ -46,13 +46,22 @@ try:
     }
 
     # Verify selected model exists
-    selected_model = "flash-2.5"
+    selected_model = "flash-2.0"
+    selected_lite_model = "flash-lite-2.0"
     if selected_model not in gemini_models:
         raise KeyError(f"Model {selected_model} not found in gemini_models")
+    if selected_lite_model not in gemini_models:
+        raise KeyError(f"Model {selected_lite_model} not found in gemini_models")
 
-    # Configure language model with lightweight Gemini model
+    # Configure language model with Gemini model
     llm_model = OpenAIChatCompletionsModel(
         model=gemini_models[selected_model],
+        openai_client=external_client
+    )
+
+    # Configure language model with lightweight Gemini model
+    llm_lite_model = OpenAIChatCompletionsModel(
+        model=gemini_models[selected_lite_model],
         openai_client=external_client
     )
 
@@ -66,6 +75,7 @@ try:
         model=llm_model,
         # model_settings=ModelSettings(temperature=0.3, max_tokens=500)
     )
+
 
 except ValueError as ve:
     logger.error(f"Configuration error: {str(ve)}")

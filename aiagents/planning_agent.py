@@ -1,7 +1,7 @@
 from agents import RunContextWrapper, ModelSettings, handoff
 from aiagents.lead_research_agent import lead_research_agent
 from config.context import UserContext, SUBSCRIPTION_CONFIGS
-from config.config import base_agent
+from config.config import base_agent, llm_lite_model
 from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 
 
@@ -33,7 +33,8 @@ Your Job:
 planning_agent = base_agent.clone(
     name="PlanningAgent",
     instructions=planning_agent_instructions,
-    model_settings=ModelSettings(temperature=0.3, max_tokens=500),
+    model_settings=ModelSettings(temperature=0.3, max_tokens=1500),
+    model=llm_lite_model,
     tools=[],
     handoffs=[
         handoff(

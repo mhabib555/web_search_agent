@@ -1,104 +1,81 @@
 import asyncio
-import json
-from agents import Runner, SQLiteSession, ItemHelpers
-from aiagents.information_gathering_agent import information_gathering_agent
+from aiagents.information_gathering_runner import run_information_gathering_agent
+from aiagents.planning_agent_runner import run_planning_agent
 from config.context import UserContext
-from config.fake_data import fake_users
 from config.config import logger
+from utils import initialize_sqlite_session, get_user_context, get_user_input, display_final_report, save_as_markdown
+from config.constants import RESET, GREEN, BLUE, MAGENTA, YELLOW, RED
 
-# ANSI escape codes for colors
-RESET = "\033[0m"
-CYAN = "\033[36m"
-YELLOW = "\033[33m"
-GREEN = "\033[32m"
-BLUE = "\033[34m"
-MAGENTA = "\033[35m"
-WHITE = "\033[1;37m"  # Bold white
-RED = "\033[31m"
+async def process_query_loop(user_context: UserContext, session):
+    """Main loop to handle user queries and agent execution until information is complete."""
+    default_query = "How did the adoption of server-side rendering with Laravel improve page load times of websites, concise?"
+    
+    while True:
+        try:
+            # Get initial user input
+            user_input = get_user_input(default_query, prompt_type="initial")
+            if user_input == 'exit':
+                print(f"{YELLOW}Exiting query loop.{RESET}")
+                break
 
-# Initialize SQLite session for storing research data
-try:
-    pass
-    # session = SQLiteSession("deep_research")
-except Exception as e:
-    logger.error(f"Failed to initialize SQLite session: {str(e)}")
-    print(f"{RED}Error: Failed to initialize SQLite session: {str(e)}{RESET}")
-    raise
+            # Initialize or update the query with user input
+            current_query = user_input
+
+            # Loop until information gathering is complete
+            while True:
+                info_gathering_result = await run_information_gathering_agent(current_query, user_context, session)
+                
+                if info_gathering_result and info_gathering_result.is_information_complete:
+                    print(f"{GREEN}Information gathering complete. Proceeding to planning phase.{RESET}")
+                    final_report, last_agent = await run_planning_agent(info_gathering_result, user_context, session)
+                    display_final_report(final_report, last_agent)
+                    # Prompt for a new topic
+                    user_input = get_user_input(prompt_type="new_topic_or_save")
+                    if user_input == 'exit':
+                        print(f"{YELLOW}Exiting query loop.{RESET}")
+                        break
+                    elif user_input == 'save':
+                        filename = save_as_markdown(final_report)
+                        print(f"{GREEN}Report saved as {filename}{RESET}")
+                        user_input = get_user_input(prompt_type="new_topic")
+                        if user_input == 'exit':
+                            print(f"{YELLOW}Exiting query loop.{RESET}")
+                            break
+                    # Start a new query
+                    current_query = user_input
+                else:
+                    print(f"{YELLOW}\nInformation gathering incomplete. Please provide additional details.{RESET}")
+                    print(info_gathering_result.data)
+                    additional_input = get_user_input(prompt_type="additional")
+                    if additional_input == 'exit':
+                        print(f"{YELLOW}Exiting query loop.{RESET}")
+                        return  # Exit the entire loop
+                    # Append or combine additional input to the current query
+                    current_query = f"{current_query}\nAdditional details: {additional_input}"
+
+        except KeyboardInterrupt:
+            logger.info("User interrupted the process")
+            print(f"{YELLOW}User interrupted the process{RESET}")
+            break
+        except Exception as e:
+            logger.error(f"Error in query loop: {str(e)}")
+            print(f"{RED}Error: {str(e)}{RESET}")
+            continue
+
 
 async def main():
+    """Main entry point for the Deep Research System."""
     try:
-        # Select user context from fake_users data
+        # Initialize SQLite session
+        session = initialize_sqlite_session("deep_research")
+        
+        # Select user context
         user_index = 1
-        if user_index >= len(fake_users):
-            raise IndexError("Invalid user index")
-        user_context = UserContext(
-            name=fake_users[user_index]['name'],
-            city=fake_users[user_index]['city'],
-            topic=fake_users[user_index]['topic'],
-            subscription=fake_users[user_index]['subscription']
-        )
-
-        while True:
-            try:
-                # Print system header and query prompt in cyan
-                print(f"{CYAN}\n================ Deep Research System ================{RESET}")
-                sample_query = "How did the adoption of server-side rendering with Laravel improve page load times of websites, concise?"
-                print(f"{CYAN}Type enter to query: {sample_query}{RESET}")
-                print(f"{CYAN}Type 'exit' to quit.{RESET}")
-                user_input = input(f"{CYAN}\nEnter your research query: {RESET}").strip()
-
-                if user_input.lower() == 'exit':
-                    break
-                elif user_input == "":
-                    user_input = sample_query  # Use default query if input is empty
-                    print(f"{YELLOW}Searching for default query: {user_input}{RESET}")
-
-                # Run Information Gathering Agent
-                print(f"{GREEN}\nRunning Information Gathering Agent...{RESET}")
-                response = Runner.run_streamed(
-                    starting_agent=information_gathering_agent,
-                    input=user_input,
-                    context=user_context,
-                    max_turns=12,
-                    # session=session
-                )
-
-                final_report = ""
-                last_agent = ""
-                async for event in response.stream_events():
-                    if event.type == "agent_updated_stream_event":
-                        last_agent = event.new_agent.name
-                        continue
-                    elif event.type == "run_item_stream_event":
-                        if event.item.type == "message_output_item":
-                            final_report = ItemHelpers.text_message_output(event.item)
-                            print(f"{BLUE}\n\n[{last_agent}] Response: {final_report}...{RESET}")
-                        elif event.item.type == "tool_call_output_item":
-                            print(event.item.output)
-                            try:
-                                tool_output = json.loads(event.item.output)
-                                print(f"{MAGENTA}Tool output: {tool_output}{RESET}")
-                            except json.JSONDecodeError as je:
-                                pass
-                                # logger.error(f"Failed to parse tool output: {str(je)}")
-                                # print(f"{RED}Failed to parse tool output: {str(je)}{RESET}")
-
-                # Print final report if generated by ReportWriterAgent in bold white
-                if final_report and last_agent == "ReportWriterAgent":
-                    print(f"{WHITE}\n\n\n================================{RESET}")
-                    print(f"{WHITE}\n=== {last_agent} Research Report ===\n{RESET}")
-                    print(f"{WHITE}{final_report}{RESET}")
-                    print(f"{WHITE}\n=== End of Report ===\n{RESET}")
-
-            except KeyboardInterrupt:
-                logger.info("User interrupted the process")
-                print(f"{YELLOW}User interrupted the process{RESET}")
-                break
-            except Exception as e:
-                logger.error(f"Error in main loop: {str(e)}")
-                print(f"{RED}Error: {str(e)}{RESET}")
-                continue  # Continue loop to allow new queries
-
+        user_context = get_user_context(user_index)
+        
+        # Run query processing loop
+        await process_query_loop(user_context, session)
+        
     except IndexError as ie:
         logger.error(f"User context error: {str(ie)}")
         print(f"{RED}Error: {str(ie)}{RESET}")

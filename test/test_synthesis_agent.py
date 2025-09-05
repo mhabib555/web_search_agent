@@ -6,7 +6,7 @@ def test_synthesis_agent_attributes():
     assert isinstance(synthesis_agent.instructions, str)
     assert hasattr(synthesis_agent, "model_settings")
     assert synthesis_agent.model_settings.temperature == 0.3
-    assert synthesis_agent.model_settings.max_tokens == 2000
+    assert synthesis_agent.model_settings.max_tokens == 1500
     assert hasattr(synthesis_agent, "handoffs")
     assert len(synthesis_agent.handoffs) == 1
 

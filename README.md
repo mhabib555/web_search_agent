@@ -107,9 +107,10 @@ You will also need to obtain the following API keys:
 web_search_agent/
 │
 ├── deep_research_system.py        # Main script: orchestrates the workflow
+├── utils.py                       # Extracted utility functions
 │
 ├── aiagents/
-│   ├── information_gathering_agent.py  # Assigns mock user info, hands off to Planning
+│   ├── information_gathering_agent.py  # Get info form user about report, hands off to Planning
 │   ├── planning_agent.py               # Breaks down queries, hands off to Lead Research
 │   ├── lead_researcher.py              # Coordinates specialist agents as tools
 │   ├── research_agents.py              # Research, Source Checker, Conflict Detector
@@ -119,7 +120,8 @@ web_search_agent/
 ├── config/
 │   ├── config.py                       # Loads API keys, initializes clients
 │   ├── context.py                      # User context dataclasses
-│   └── fake_data.py                    # Mock user data for personalization
+│   ├── fake_data.py                    # Mock user data for personalization
+│   └── constants.py                    # ANSI color constants
 │
 ├── test/                               # Pytest unit tests
 |

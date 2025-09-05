@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
+from pydantic import BaseModel  
 
 @dataclass
 class SubscriptionConfig:
@@ -23,3 +24,9 @@ class UserContext:
     topic: Optional[str] = None
     query: Optional[str] = None
     subscription: List[str] = field(default_factory=lambda: ["free"])  # Default to free tier
+
+
+# Information Gathering Agent returns structured data
+class InformationGatheringAnswer(BaseModel):
+    is_information_complete: bool
+    data: str

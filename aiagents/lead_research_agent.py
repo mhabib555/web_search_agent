@@ -8,8 +8,6 @@ from agents.extensions.handoff_prompt import RECOMMENDED_PROMPT_PREFIX
 def lead_research_agent_instructions(special_context: RunContextWrapper[UserContext], agent: Agent[UserContext]) -> str:
     """Generate dynamic instructions for the Lead Research Agent based on user context."""
 
-    print('\nLead Agent working ...')
-
     user_info = special_context.context
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"
     
@@ -40,7 +38,7 @@ Your task is to manage a team of specialist agents to conduct in-depth research 
 lead_research_agent = base_agent.clone(
     name="LeadResearchAgent",
     instructions=lead_research_agent_instructions,
-    model_settings=ModelSettings(temperature=0.3, max_tokens=1500),
+    model_settings=ModelSettings(temperature=0.3, max_tokens=1000),
     handoffs=[handoff(synthesis_agent)],
     tools=[
         research_agent.as_tool(
