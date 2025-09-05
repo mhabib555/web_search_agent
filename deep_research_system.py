@@ -15,8 +15,6 @@ from config.constants import RESET, GREEN, YELLOW, RED
 from utils import initialize_sqlite_session, get_user_context, get_user_input, display_final_report, save_as_markdown
 
 async def process_query_loop(user_context: UserContext, session):
-    """Main loop to handle user queries and agent execution until information is complete."""
-
     """
     Main loop to handle user queries and agent execution until information is complete.
 

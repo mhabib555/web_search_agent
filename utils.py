@@ -86,7 +86,7 @@ def get_user_input(default_query: str = "", prompt_type: str = "initial") -> str
 
     if user_input.lower() == 'exit':
         return 'exit'
-    elif user_input == "" and default_query and prompt_type == "initial":
+    if user_input == "" and default_query and prompt_type == "initial":
         print(f"{YELLOW}Searching for default query: {default_query}{RESET}")
         return default_query
     return user_input
@@ -130,19 +130,25 @@ class RunAgentHooks(RunHooks):
     """A class that implements lifecycle hooks for agent execution and interaction events."""
 
     async def on_agent_start(self, context: RunContextWrapper, agent: Agent):
+        """Called when an agent starts execution."""
         print(f"\n\n[RunLifecycle] Agent {agent.name} started working...\n\n")
 
     async def on_llm_start(self, context: RunContextWrapper, agent: Agent, system_prompt, input_items):
+        """Called before an LLM is invoked."""
         print(f"\n\n[RunLifecycle] LLM call for agent {agent.name} starting with system prompt: {system_prompt} and input items: {input_items}\n\n")
 
     async def on_agent_end(self, context: RunContextWrapper, agent: Agent, result):
+        """Called when an agent's execution ends."""
         print(f"\n\n[RunLifecycle] Agent {agent.name} ended with result: {result}\n\n")
 
     async def on_llm_end(self, context: RunContextWrapper, agent: Agent, response):
+        """Called after an LLM call finishes."""
         print(f"\n\n[RunLifecycle] LLM call for agent {agent.name} ended with response: {response}\n\n")
 
     async def on_handoff(self, context, from_agent, to_agent):
+        """Called when control is handed off between agents."""
         print(f"\n\n[RunLifecycle] Handoff from agent {from_agent.name} to agent {to_agent.name}\n\n")
 
-    async def on_tool_start(self, context: RunContextWrapper, agent: Agent, tool: Tool):  
+    async def on_tool_start(self, context: RunContextWrapper, agent: Agent, tool: Tool):
+        """Called before a tool is used by an agent."""
         print(f"\n\n[RunLifecycle] Tool {tool.name} for agent {agent.name}\n\n")
