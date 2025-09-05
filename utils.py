@@ -137,9 +137,9 @@ class RunAgentHooks(RunHooks):
         """Called before an LLM is invoked."""
         print(f"\n\n[RunLifecycle] LLM call for agent {agent.name} starting with system prompt: {system_prompt} and input items: {input_items}\n\n")
 
-    async def on_agent_end(self, context: RunContextWrapper, agent: Agent, result):
+    async def on_agent_end(self, context: RunContextWrapper, agent: Agent, output):
         """Called when an agent's execution ends."""
-        print(f"\n\n[RunLifecycle] Agent {agent.name} ended with result: {result}\n\n")
+        print(f"\n\n[RunLifecycle] Agent {agent.name} ended with result: {output}\n\n")
 
     async def on_llm_end(self, context: RunContextWrapper, agent: Agent, response):
         """Called after an LLM call finishes."""

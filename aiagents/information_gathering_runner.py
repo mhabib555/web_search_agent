@@ -29,12 +29,12 @@ async def run_information_gathering_agent(
             if event.item.type == "message_output_item":
                 try:
                     output_text = ItemHelpers.text_message_output(event.item)
-                    
+
                     # Strip Markdown code block markers and extra whitespace
                     cleaned_output = re.sub(r'```json\s*|\s*```', '', output_text).strip()
 
                     # Parse JSON string to InformationGatheringAnswer
-                    info_gathering_result = InformationGatheringAnswer.model_validate_json(cleaned_output)                    
+                    info_gathering_result = InformationGatheringAnswer.model_validate_json(cleaned_output)
                 except json.JSONDecodeError as e:
                     logger.error("Failed to parse JSON output: %s", str(e))
                     print(f"{RED}Failed to parse JSON output: {str(e)}{RESET}")

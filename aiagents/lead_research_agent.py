@@ -11,7 +11,7 @@ def lead_research_agent_instructions(special_context: RunContextWrapper[UserCont
     user_info = special_context.context
     subscription_tier = user_info.subscription[0] if user_info.subscription else "free"
 
-    if(subscription_tier == "free"):
+    if subscription_tier == "free":
         subqueires_limit = 2
         use_results_for_summary = "1-2"
         use_results_for_details = "2-3"
