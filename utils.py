@@ -1,9 +1,9 @@
+import os
 from agents import SQLiteSession, RunHooks, RunContextWrapper, Agent, Tool
 from config.context import UserContext
 from config.fake_data import fake_users
 from config.config import logger
 from config.constants import RESET, CYAN, YELLOW, WHITE, RED
-import os
 
 def initialize_sqlite_session(db_name: str) -> SQLiteSession:
     """Initialize SQLite session for storing research data.
