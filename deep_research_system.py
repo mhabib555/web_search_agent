@@ -1,13 +1,29 @@
+"""
+Main script to run a multi-agent system for deep research.
+
+This module orchestrates a research workflow where agents gather information,
+plan the final report, and present the results to the user. It handles user
+interaction, agent execution, and error management within a continuous loop.
+"""
+
 import asyncio
 from aiagents.information_gathering_runner import run_information_gathering_agent
 from aiagents.planning_agent_runner import run_planning_agent
 from config.context import UserContext
 from config.config import logger
-from config.constants import RESET, GREEN, BLUE, MAGENTA, YELLOW, RED
+from config.constants import RESET, GREEN, YELLOW, RED
 from utils import initialize_sqlite_session, get_user_context, get_user_input, display_final_report, save_as_markdown
 
 async def process_query_loop(user_context: UserContext, session):
     """Main loop to handle user queries and agent execution until information is complete."""
+
+    """
+    Main loop to handle user queries and agent execution until information is complete.
+
+    Args:
+        user_context (UserContext): The user's context for personalization.
+        session: The SQLiteSession session.
+    """
     default_query = "How did the adoption of server-side rendering with Laravel improve page load times of websites, concise?"
 
     exit_flag = False
@@ -44,7 +60,7 @@ async def process_query_loop(user_context: UserContext, session):
                         if user_input == 'exit':
                             exit_flag = True
                             break
-                        elif user_input == 'save':
+                        if user_input == 'save':
                             filename = save_as_markdown(final_report)
                             print(f"{GREEN}Report saved as {filename}{RESET}")
                             user_input = get_user_input(prompt_type="new_topic")
@@ -75,7 +91,7 @@ async def process_query_loop(user_context: UserContext, session):
             exit_flag = True
             continue
         except Exception as e:
-            logger.error("Error in query loop: %s" , str(e))
+            logger.error("Error in query loop: %s" ,str(e))
             print(f"{RED}Error: {str(e)}{RESET}")
             continue
 
@@ -94,7 +110,7 @@ async def main():
         await process_query_loop(user_context, session)
 
     except IndexError as ie:
-        logger.error("User context error: %s" ,str(e))
+        logger.error("User context error: %s" ,str(ie))
         print(f"{RED}Error: {str(ie)}{RESET}")
         raise
     except Exception as e:
