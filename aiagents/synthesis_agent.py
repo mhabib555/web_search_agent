@@ -5,7 +5,7 @@ from config.config import base_agent
 
 synthesis_agent = base_agent.clone(
     name="SynthesisAgent",
-    instructions=f""" {RECOMMENDED_PROMPT_PREFIX}
+    instructions=f"""{RECOMMENDED_PROMPT_PREFIX}
 You are a Synthesis Agent. Combine the provided research findings into a coherent report and hand off to the Report Writer Agent.
 - Receive research findings from the Lead Research Agent.
 - Include key insights, themes, and trends.

@@ -23,7 +23,7 @@ class UserContext:
     city: Optional[str] = None
     topic: Optional[str] = None
     query: Optional[str] = None
-    subscription: List[str] = field(default_factory=lambda: ["free"]) 
+    subscription: List[str] = field(default_factory=lambda: ["free"])
 
 
 class InformationGatheringAnswer(BaseModel):
