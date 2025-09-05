@@ -3,17 +3,17 @@ from aiagents.information_gathering_runner import run_information_gathering_agen
 from aiagents.planning_agent_runner import run_planning_agent
 from config.context import UserContext
 from config.config import logger
-from utils import initialize_sqlite_session, get_user_context, get_user_input, display_final_report, save_as_markdown
 from config.constants import RESET, GREEN, BLUE, MAGENTA, YELLOW, RED
+from utils import initialize_sqlite_session, get_user_context, get_user_input, display_final_report, save_as_markdown
 
 async def process_query_loop(user_context: UserContext, session):
     """Main loop to handle user queries and agent execution until information is complete."""
     default_query = "How did the adoption of server-side rendering with Laravel improve page load times of websites, concise?"
-    
+
     exit_flag = False
-    
+
     while True:
-        
+
         if exit_flag:
             print(f"{YELLOW}Exiting query loop.{RESET}")
             break
@@ -32,7 +32,7 @@ async def process_query_loop(user_context: UserContext, session):
                 if exit_flag:
                     break
                 info_gathering_result = await run_information_gathering_agent(current_query, user_context, session)
-                
+
                 if info_gathering_result and info_gathering_result.is_information_complete:
                     print(f"{GREEN}Information gathering complete. Proceeding to planning phase.{RESET}")
                     final_report, last_agent = await run_planning_agent(info_gathering_result, user_context, session)
@@ -75,7 +75,7 @@ async def process_query_loop(user_context: UserContext, session):
             exit_flag = True
             continue
         except Exception as e:
-            logger.error("Error in query loop: %s" ,str(e))
+            logger.error("Error in query loop: %s" , str(e))
             print(f"{RED}Error: {str(e)}{RESET}")
             continue
 
@@ -85,14 +85,14 @@ async def main():
     try:
         # Initialize SQLite session
         session = initialize_sqlite_session("deep_research")
-        
+
         # Select user context
         user_index = 1
         user_context = get_user_context(user_index)
-        
+
         # Run query processing loop
         await process_query_loop(user_context, session)
-        
+
     except IndexError as ie:
         logger.error("User context error: %s" ,str(e))
         print(f"{RED}Error: {str(ie)}{RESET}")

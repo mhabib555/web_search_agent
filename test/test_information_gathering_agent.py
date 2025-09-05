@@ -36,6 +36,3 @@ async def test_run_information_gathering_agent():
 
     else:
         pytest.fail(f"Unexpected return type from run_information_gathering_agent: {type(result)}")
-
-
-

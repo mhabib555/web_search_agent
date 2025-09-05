@@ -1,11 +1,9 @@
-import pytest
-import types
 from aiagents.information_gathering_agent import information_gathering_agent
 from config.context import UserContext
 from config.fake_data import fake_users
 
 def test_imports_and_user_context():
-    # Test that the agent and user context can be created without error
+    """Verify InformationGatheringAgent and UserContext initialize correctly with fake user data."""
     user_index = 1
     user_context = UserContext(
         name=fake_users[user_index]['name'],
@@ -20,6 +18,6 @@ def test_imports_and_user_context():
     assert information_gathering_agent.name == "InformationGatheringAgent"
 
 def test_main_is_async():
-    # Import the main function and check if it's a coroutine
+    """Check that the main function in deep_research_system is an async coroutine."""
     import deep_research_system
     assert hasattr(deep_research_system, "main")

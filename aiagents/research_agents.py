@@ -1,3 +1,5 @@
+"""Module defining ResearchAgent, SourceCheckerAgent, and ConflictDetectorAgent with web search functionality."""
+
 from agents import ModelSettings, function_tool
 from config.config import base_agent,tavily_client
 

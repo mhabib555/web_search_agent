@@ -1,3 +1,5 @@
+"""Module defining the ReportWriterAgent and report formatting function."""
+
 from agents import Agent, ModelSettings
 from config.config import llm_model
 
