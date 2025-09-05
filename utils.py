@@ -20,7 +20,7 @@ def initialize_sqlite_session(db_name: str) -> SQLiteSession:
     try:
         return SQLiteSession(db_name)
     except Exception as e:
-        logger.error(f"Failed to initialize SQLite session: {str(e)}")
+        logger.error("Failed to initialize SQLite session: %s", str(e))
         print(f"{RED}Error: Failed to initialize SQLite session: {str(e)}{RESET}")
         raise
 
@@ -56,7 +56,7 @@ def get_user_input(default_query: str = "", prompt_type: str = "initial") -> str
         str: User-provided query, default query, or 'exit'.
     """
     print(f"{CYAN}\n================ Deep Research System ================{RESET}")
-    
+
     if prompt_type == "initial":
         if default_query:
             print(f"{CYAN}Type enter to query: {default_query}{RESET}")
@@ -83,7 +83,7 @@ def get_user_input(default_query: str = "", prompt_type: str = "initial") -> str
         prompt_message = f"{CYAN}\nEnter your research query: {RESET}"
 
     user_input = input(prompt_message).strip()
-    
+
     if user_input.lower() == 'exit':
         return 'exit'
     elif user_input == "" and default_query and prompt_type == "initial":
@@ -131,7 +131,7 @@ class RunAgentHooks(RunHooks):
 
     async def on_agent_start(self, context: RunContextWrapper, agent: Agent):
         print(f"\n\n[RunLifecycle] Agent {agent.name} started working...\n\n")
-        
+
     async def on_llm_start(self, context: RunContextWrapper, agent: Agent, system_prompt, input_items):
         print(f"\n\n[RunLifecycle] LLM call for agent {agent.name} starting with system prompt: {system_prompt} and input items: {input_items}\n\n")
 
@@ -144,5 +144,5 @@ class RunAgentHooks(RunHooks):
     async def on_handoff(self, context, from_agent, to_agent):
         print(f"\n\n[RunLifecycle] Handoff from agent {from_agent.name} to agent {to_agent.name}\n\n")
 
-    async def on_tool_start(self, context: RunContextWrapper, agent: Agent, tool: Tool):   
+    async def on_tool_start(self, context: RunContextWrapper, agent: Agent, tool: Tool):  
         print(f"\n\n[RunLifecycle] Tool {tool.name} for agent {agent.name}\n\n")
