@@ -27,7 +27,7 @@ async def run_planning_agent(
         if event.type == "agent_updated_stream_event":
             last_agent = event.new_agent.name
             continue
-        elif event.type == "run_item_stream_event":
+        if event.type == "run_item_stream_event":
             if event.item.type == "message_output_item":
                 final_report = ItemHelpers.text_message_output(event.item)
                 # print(f"{BLUE}\n[{last_agent}] Response: {final_report}...{RESET}")
